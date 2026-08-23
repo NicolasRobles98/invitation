@@ -142,7 +142,7 @@
 </head>
 <!-- Se agregó la clase "no-scroll" para bloquear el movimiento inicial -->
 
-<body class="bg-surface text-on-surface font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<body class="bg-surface text-on-surface font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed overflow-x-hidden">
   <!-- PANTALLA DEL SOBRE -->
   <!-- <div id="envelope-screen">
         <div class="envelope">
@@ -165,8 +165,8 @@
     <header class="relative min-h-screen flex flex-col items-center justify-center pt-20 px-gutter overflow-hidden">
   
   <!-- CAMBIO: -inset-1 en lugar de inset-0 -->
-  <div class="absolute -inset-1 z-0 bg-fixed bg-cover bg-top bg-no-repeat bg-[url('./img/fondo2.jpg')] md:bg-[url('./img/espaldaatardecer.jpg')]">
-    <div class="absolute inset-0 hero-gradient z-10"></div>
+<div class="absolute top-0 left-0 w-full h-full z-0 bg-fixed bg-cover bg-top bg-no-repeat bg-[url('./img/fondo2.jpg')] md:bg-[url('./img/espaldaatardecer.jpg')]">
+    <div class="absolute top-0 left-0 w-full h-full hero-gradient z-10"></div>
   </div>
   
   <div class="relative z-20 text-center max-w-4xl mx-auto">
@@ -174,7 +174,7 @@
     <!-- ... (tu código SVG sigue intacto aquí) ... -->
 
         <!-- Contenedor con SCALE para forzar el tamaño -->
-        <div class="mb-10 text-primary mx-auto w-full scale-110 md:scale-[200%]"
+        <div class="mb-10 text-primary mx-auto w-full scale-110 md:scale-[180%]"
           style="text-shadow: rgba(0, 0, 0, 0.1) 0.5px 0.5px 0px;">
 
           <svg class="firma-animada w-full h-auto" viewBox="0 0 1775 267" fill="none"
@@ -256,10 +256,8 @@
       </div>
     </section>
 
-    <section class="py-section-padding-desktop px-gutter max-w-container-max mx-auto text-center justify-center items-center flex flex-col min-h-[40vh]">
-  <h3
-    class="font-label-caps text-label-caps text-secondary uppercase tracking-[0.2em] text-[2em] md:text-[2em] leading-normal md:leading-normal oculto"
-    data-animacion="animar-arriba" style="font-family: 'pompiere';">
+    <section class="w-full overflow-hidden py-section-padding-desktop px-gutter max-w-container-max mx-auto text-center justify-center items-center flex flex-col min-h-[40vh]">
+  <h3 class="font-label-caps text-label-caps text-secondary uppercase tracking-[0.2em] text-[1.5em] md:text-[2em] leading-normal md:leading-normal animar-arriba break-words" data-animacion="animar-arriba" style="font-family: 'pompiere';">
     Queremos que seas parte de este momento
   </h3>
 </section>
@@ -275,7 +273,6 @@
             data-alt="A candid, high-fashion black and white portrait of a couple laughing together in a minimalist urban setting."
             src="./img/risabyn.jpg" />
         </div>
-        <div class="absolute -bottom-8 -right-8 w-48 h-48 bg-secondary-container/20 rounded-full blur-3xl -z-10"></div>
       </div>
       <div class="space-y-8 oculto" data-animacion="animar-der" flex flex-col justify-center items-center>
         <!-- <span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest block">Nuestra
