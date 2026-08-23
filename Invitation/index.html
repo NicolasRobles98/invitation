@@ -596,65 +596,46 @@
     </div>
   </div>
 
-  <!-- RSVP Section -->
-  <section class="bg-primary-container py-section-padding-desktop px-gutter" id="rsvp">
-    <div class="max-w-[700px] mx-auto bg-surface p-8 md:p-20 shadow-sm border border-secondary/5 oculto"
-      data-animacion="animar-arriba">
-      <div class="text-center mb-12">
-        <h2 class="font-display-lg text-headline-md text-primary mt-4">
-          Confirma tu asistencia
-        </h2>
-        <p class="font-body-md text-on-surface-variant mt-4">
-          Por favor, confirmá antes del 15 de enero de 2027.
-        </p>
+<section class="bg-primary-container py-section-padding-desktop px-gutter" id="nx_rsvp_section">
+  <div class="max-w-[700px] mx-auto bg-surface p-8 md:p-20 shadow-sm border border-secondary/5 oculto" data-animacion="animar-arriba">
+    <div class="text-center mb-12">
+      <h2 class="font-display-lg text-headline-md text-primary mt-4">
+        Confirma tu asistencia
+      </h2>
+      <p class="font-body-md text-on-surface-variant mt-4">
+        Por favor, confirmá antes del 15 de enero de 2027.
+      </p>
+    </div>
+
+    <div id="nx_alerta_msj" class="nx_ocultar text-center font-body-md mb-6 p-4 rounded"></div>
+
+    <form id="nx_formulario_asistencia" class="space-y-10">
+      <div class="grid md:grid-cols-2 gap-10">
+        <div class="relative group">
+          <input class="w-full bg-transparent border-0 border-b border-outline-variant py-4 px-0 focus:ring-0 focus:border-secondary transition-colors placeholder:text-on-surface-variant/50 font-body-md text-body-md" id="nx_campo_nombre" placeholder="Nombre" type="text" required />
+        </div>
+        <div class="relative group">
+          <input class="w-full bg-transparent border-0 border-b border-outline-variant py-4 px-0 focus:ring-0 focus:border-secondary transition-colors placeholder:text-on-surface-variant/50 font-body-md text-body-md" id="nx_campo_apellido" placeholder="Apellido" type="text" required />
+        </div>
       </div>
 
-      <div id="form-message" class="hidden text-center font-body-md mb-6"></div>
+      <div class="relative group">
+        <input class="w-full bg-transparent border-0 border-b border-outline-variant py-4 px-0 focus:ring-0 focus:border-secondary transition-colors placeholder:text-on-surface-variant/50 font-body-md text-body-md" id="nx_campo_edad" placeholder="Edad" type="number" required />
+      </div>
 
-      <form id="rsvp-form" class="space-y-10">
-        <div class="grid md:grid-cols-2 gap-10">
-          <div class="relative group">
-            <input
-              class="w-full bg-transparent border-0 border-b border-outline-variant py-4 px-0 focus:ring-0 focus:border-secondary transition-colors placeholder:text-on-surface-variant/50 font-body-md text-body-md"
-              id="nombre" placeholder="Nombre" type="text" required />
-          </div>
-          <div class="relative group">
-            <input
-              class="w-full bg-transparent border-0 border-b border-outline-variant py-4 px-0 focus:ring-0 focus:border-secondary transition-colors placeholder:text-on-surface-variant/50 font-body-md text-body-md"
-              id="apellido" placeholder="Apellido" type="text" required />
-          </div>
-        </div>
+      <div class="relative group">
+        <textarea class="w-full bg-transparent border-0 border-b border-outline-variant py-4 px-0 focus:ring-0 focus:border-secondary transition-colors placeholder:text-on-surface-variant/50 font-body-md text-body-md resize-none" id="nx_campo_dieta" placeholder="Restricciones Alimentarias" rows="2"></textarea>
+      </div>
 
-        <div class="relative group">
-          <input
-            class="w-full bg-transparent border-0 border-b border-outline-variant py-4 px-0 focus:ring-0 focus:border-secondary transition-colors placeholder:text-on-surface-variant/50 font-body-md text-body-md"
-            id="edad" placeholder="Edad" type="number" required />
-        </div>
-
-        <div class="relative group">
-          <textarea
-            class="w-full bg-transparent border-0 border-b border-outline-variant py-4 px-0 focus:ring-0 focus:border-secondary transition-colors placeholder:text-on-surface-variant/50 font-body-md text-body-md resize-none"
-            id="dieta" placeholder="Restricciones Alimentarias" rows="2"></textarea>
-        </div>
-
-        <div class="pt-6 text-center">
-          <button id="rsvp-submit-btn" type="submit"
-            class="w-full bg-tertiary text-surface py-5 rounded-DEFAULT font-label-caps text-label-caps uppercase tracking-widest hover:bg-secondary transition-all shadow-md disabled:opacity-50 flex justify-center items-center gap-2">
-            <span id="rsvp-btn-text">Enviar Confirmación</span>
-            
-            <!-- SVG del Spinner animado (oculto por defecto) -->
-            <svg id="rsvp-btn-spinner" class="hidden animate-spin h-5 w-5 text-surface" xmlns="http://www.w3.org/2000/svg"
-              fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-              </path>
-            </svg>
-          </button>
-        </div>
-      </form>
-    </div>
-  </section>
+      <div class="pt-6 text-center">
+        <button id="nx_boton_enviar" class="w-full bg-tertiary text-surface py-5 rounded-DEFAULT font-label-caps text-label-caps uppercase tracking-widest hover:bg-secondary transition-all shadow-md disabled:opacity-50 flex justify-center items-center gap-3" type="submit">
+          <span id="nx_texto_boton">Enviar Confirmación</span>
+          <div id="nx_animacion_carga" class="nx_estilo_carga nx_ocultar"></div>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
 
   <!-- Gift Registry Section -->
 

@@ -80,101 +80,92 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Envío a Google Sheets unificado con Validación
-document.addEventListener('DOMContentLoaded', () => {
-  const rsvpForm = document.getElementById('rsvp-form');
+document.getElementById('nx_formulario_asistencia').addEventListener('submit', async function (e) {
+  e.preventDefault();
 
-  if (rsvpForm) {
-    rsvpForm.addEventListener('submit', async function (e) {
-      e.preventDefault();
+  const nxContenedorMensaje = document.getElementById('nx_alerta_msj');
+  const nxBotonAccion = document.getElementById('nx_boton_enviar');
+  const nxEtiquetaBoton = document.getElementById('nx_texto_boton');
+  const nxIndicadorCarga = document.getElementById('nx_animacion_carga');
+  const nxFormulario = this;
 
-      const submitBtn = document.getElementById('submit-btn');
-      const formMessage = document.getElementById('form-message');
-      const form = this;
+  const nxNombreVal = document.getElementById('nx_campo_nombre').value.trim();
+  const nxApellidoVal = document.getElementById('nx_campo_apellido').value.trim();
+  const nxEdadVal = parseInt(document.getElementById('nx_campo_edad').value, 10);
+  const nxDietaVal = document.getElementById('nx_campo_dieta').value.trim();
 
-      // 1. OBTENEMOS Y LIMPIAMOS LOS VALORES (quitamos espacios extra al inicio y final)
-      const nombreVal = document.getElementById('nombre').value.trim();
-      const apellidoVal = document.getElementById('apellido').value.trim();
-      const dietaVal = document.getElementById('dieta').value.trim();
-      const edadVal = parseInt(document.getElementById('edad').value, 10);
+  const nxSoloLetrasRegex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/;
 
-      // 2. LÓGICA DE VALIDACIÓN
-      // Regex que permite solo letras (mayúsculas, minúsculas), espacios, acentos y la letra ñ.
-      const soloLetrasRegex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/;
+  nxContenedorMensaje.className = 'text-center font-body-md mb-6 p-4 rounded text-red-800 bg-red-100';
 
-      formMessage.classList.remove('hidden', 'text-green-600');
-      formMessage.classList.add('text-red-500');
+  if (nxNombreVal.length < 2 || !nxSoloLetrasRegex.test(nxNombreVal)) {
+    nxContenedorMensaje.textContent = 'Por favor, ingresa un nombre válido (solo letras).';
+    nxContenedorMensaje.classList.remove('nx_ocultar');
+    return;
+  }
 
-      if (nombreVal.length < 2 || !soloLetrasRegex.test(nombreVal)) {
-        formMessage.innerHTML = 'Por favor, ingresa un nombre válido (solo letras).';
-        return; // Corta la ejecución acá, no hace el fetch
-      }
+  if (nxApellidoVal.length < 2 || !nxSoloLetrasRegex.test(nxApellidoVal)) {
+    nxContenedorMensaje.textContent = 'Por favor, ingresa un apellido válido (solo letras).';
+    nxContenedorMensaje.classList.remove('nx_ocultar');
+    return;
+  }
 
-      if (apellidoVal.length < 2 || !soloLetrasRegex.test(apellidoVal)) {
-        formMessage.innerHTML = 'Por favor, ingresa un apellido válido (solo letras).';
-        return;
-      }
+  if (isNaN(nxEdadVal) || nxEdadVal < 0 || nxEdadVal > 120) {
+    nxContenedorMensaje.textContent = 'Por favor, ingresa una edad real (entre 0 y 120 años).';
+    nxContenedorMensaje.classList.remove('nx_ocultar');
+    return;
+  }
 
-      if (isNaN(edadVal) || edadVal < 0 || edadVal > 120) {
-        formMessage.innerHTML = 'Por favor, ingresa una edad real (entre 0 y 120 años).';
-        return;
-      }
+  nxContenedorMensaje.classList.add('nx_ocultar');
+  nxBotonAccion.disabled = true;
+  nxEtiquetaBoton.textContent = 'Enviando...';
+  nxIndicadorCarga.classList.remove('nx_ocultar');
 
-      // Si pasamos todas las validaciones, procedemos con el envío
-      const originalText = submitBtn.innerText;
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'Enviando...';
-      formMessage.classList.add('hidden'); // Ocultamos errores previos si los hubiera
+  const nxUrl = "https://script.google.com/macros/s/AKfycbzz32EvZfaEx9GdMd5sokiUCqmsGbwBZiQ7w4XmyYWOXlLlp1qv7lpXyIU4DXtBuZsOnA/exec";
+  
+  const nxPayload = {
+    nombre: nxNombreVal,
+    apellido: nxApellidoVal,
+    dieta: nxDietaVal,
+    edad: nxEdadVal,
+    fechaDeRegistro: new Date().toISOString().split('T')[0]
+  };
 
-      const url = "https://script.google.com/macros/s/AKfycbzz32EvZfaEx9GdMd5sokiUCqmsGbwBZiQ7w4XmyYWOXlLlp1qv7lpXyIU4DXtBuZsOnA/exec";
-
-      const payload = {
-        nombre: nombreVal,
-        apellido: apellidoVal,
-        dieta: dietaVal,
-        edad: edadVal,
-        fechaDeRegistro: new Date().toISOString().split('T')[0]
-      };
-
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          body: JSON.stringify(payload),
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8",
-          },
-          redirect: "follow"
-        });
-
-        const result = await response.json();
-
-        if (result.status === "success") {
-          submitBtn.innerText = "¡Confirmado!";
-          submitBtn.classList.replace("bg-tertiary", "bg-secondary");
-
-          setTimeout(() => {
-            form.classList.add('hidden');
-            formMessage.innerHTML = '¡Gracias por confirmar tu asistencia!';
-            formMessage.classList.remove('hidden', 'text-red-500');
-            formMessage.classList.add('text-green-600', 'block'); // Mostramos mensaje de éxito
-          }, 1500);
-
-        } else {
-          console.error("Error desde Apps Script:", result.message);
-          throw new Error('Error en el servidor');
-        }
-      } catch (error) {
-        console.error("Detalle del fetch:", error);
-        formMessage.innerHTML = 'Hubo un error al enviar. Por favor, intenta de nuevo.';
-        formMessage.classList.remove('hidden', 'text-green-600');
-        formMessage.classList.add('text-red-500', 'block');
-
-        submitBtn.disabled = false;
-        submitBtn.innerText = originalText;
-      }
+  try {
+    const nxRespuesta = await fetch(nxUrl, {
+      method: "POST",
+      body: JSON.stringify(nxPayload),
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      redirect: "follow"
     });
+
+    const nxResultado = await nxRespuesta.json();
+
+    if (nxResultado.status === "success") {
+      nxEtiquetaBoton.textContent = "¡Confirmado!";
+      nxBotonAccion.classList.replace("bg-tertiary", "bg-secondary");
+      nxIndicadorCarga.classList.add('nx_ocultar');
+
+      setTimeout(() => {
+        nxFormulario.classList.add('nx_ocultar');
+        nxContenedorMensaje.textContent = '¡Gracias por confirmar tu asistencia!';
+        nxContenedorMensaje.className = 'text-center font-body-md mb-6 p-4 rounded bg-green-100 text-green-800 block';
+      }, 1500);
+
+    } else {
+      throw new Error('Error en el servidor de Sheets');
+    }
+  } catch (nxFalla) {
+    nxContenedorMensaje.textContent = 'Hubo un error al enviar. Por favor, intenta de nuevo.';
+    nxContenedorMensaje.className = 'text-center font-body-md mb-6 p-4 rounded bg-red-100 text-red-800 block';
+    
+    nxBotonAccion.disabled = false;
+    nxEtiquetaBoton.textContent = 'Enviar Confirmación';
+    nxIndicadorCarga.classList.add('nx_ocultar');
   }
 });
-
 
 // ==========================================
 // LÓGICA DEL MODAL Y PORTAPAPELES
@@ -404,3 +395,68 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+// formulario de asistencia
+
+// document.getElementById('nx_formulario_asistencia').addEventListener('submit', async function (e) {
+//   e.preventDefault();
+
+//   const nxContenedorMensaje = document.getElementById('nx_alerta_msj');
+//   const nxBotonAccion = document.getElementById('nx_boton_enviar');
+//   const nxEtiquetaBoton = document.getElementById('nx_texto_boton');
+//   const nxIndicadorCarga = document.getElementById('nx_animacion_carga');
+
+//   const nxNombreVal = document.getElementById('nx_campo_nombre').value.trim();
+//   const nxApellidoVal = document.getElementById('nx_campo_apellido').value.trim();
+//   const nxEdadVal = parseInt(document.getElementById('nx_campo_edad').value, 10);
+
+//   const nxSoloLetrasRegex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/;
+
+//   nxContenedorMensaje.className = 'text-center font-body-md mb-6 p-4 rounded text-red-800 bg-red-100';
+
+//   if (nxNombreVal.length < 2 || !nxSoloLetrasRegex.test(nxNombreVal)) {
+//     nxContenedorMensaje.textContent = 'Por favor, ingresa un nombre válido (solo letras).';
+//     nxContenedorMensaje.classList.remove('nx_ocultar');
+//     return;
+//   }
+
+//   if (nxApellidoVal.length < 2 || !nxSoloLetrasRegex.test(nxApellidoVal)) {
+//     nxContenedorMensaje.textContent = 'Por favor, ingresa un apellido válido (solo letras).';
+//     nxContenedorMensaje.classList.remove('nx_ocultar');
+//     return;
+//   }
+
+//   if (isNaN(nxEdadVal) || nxEdadVal < 0 || nxEdadVal > 120) {
+//     nxContenedorMensaje.textContent = 'Por favor, ingresa una edad real (entre 0 y 120 años).';
+//     nxContenedorMensaje.classList.remove('nx_ocultar');
+//     return;
+//   }
+
+//   nxContenedorMensaje.classList.add('nx_ocultar');
+//   nxBotonAccion.disabled = true;
+//   nxEtiquetaBoton.textContent = 'Enviando...';
+//   nxIndicadorCarga.classList.remove('nx_ocultar');
+
+//   try {
+//     await new Promise((nxResolver, nxRechazar) => {
+//       setTimeout(() => {
+//         const nxEstadoPeticion = true;
+//         if (nxEstadoPeticion) {
+//           nxResolver();
+//         } else {
+//           nxRechazar(new Error('Error de conexion'));
+//         }
+//       }, 2000);
+//     });
+
+//     nxContenedorMensaje.textContent = '¡Gracias! Tu confirmación fue enviada con éxito.';
+//     nxContenedorMensaje.className = 'text-center font-body-md mb-6 p-4 rounded bg-green-100 text-green-800';
+//     this.reset();
+//   } catch (nxFalla) {
+//     nxContenedorMensaje.textContent = 'Ocurrió un error al enviar. Por favor, intentá de nuevo.';
+//     nxContenedorMensaje.className = 'text-center font-body-md mb-6 p-4 rounded bg-red-100 text-red-800';
+//   } finally {
+//     nxBotonAccion.disabled = false;
+//     nxEtiquetaBoton.textContent = 'Enviar Confirmación';
+//     nxIndicadorCarga.classList.add('nx_ocultar');
+//   }
+// });
