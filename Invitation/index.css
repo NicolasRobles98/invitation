@@ -164,17 +164,14 @@ Contenedor que tapa toda la pantalla
 .firma-animada path {
     fill: transparent;
     stroke: currentColor; 
-    stroke-width: 1; /* Lo bajamos a 1 para que la letra no quede muy "gorda" con el relleno */
-    
+    stroke-width: 1; 
     stroke-linecap: round;
     stroke-linejoin: round;
-    
     stroke-dasharray: var(--length, 1000);
     stroke-dashoffset: var(--length, 1000);
-    
-    /* ACÁ ESTÁ LA MAGIA: 
-       Ambas animaciones (borde y relleno) usan el mismo tiempo y arrancan a la vez 
-       para CADA letra, logrando el efecto de tinta sólida. */
+}
+
+.firma-animada.iniciar-animacion path {
     animation: 
         dibujarBorde var(--duracion, 1s) ease-in-out var(--delay, 0s) forwards, 
         rellenarTexto var(--duracion, 1s) ease-out var(--delay, 0s) forwards;

@@ -247,36 +247,45 @@ function animarFirma() {
   const svg = document.querySelector('.firma-animada');
   if (!svg) return;
 
-  // Obtiene todos los trazos del SVG y los convierte en un Array
   const paths = Array.from(svg.querySelectorAll('path'));
 
-  // ORDENAMIENTO: Ordena las letras estrictamente de Izquierda a Derecha
   paths.sort((a, b) => a.getBBox().x - b.getBBox().x);
 
   let delayAcumulado = 0;
-
-  // VELOCIDAD DE LA PLUMA: Podés cambiar este número. 
-  // 0.003 es una velocidad natural. Menor número = más rápido.
   const velocidad = 0.00025;
 
   paths.forEach((path) => {
-    // Mide el largo de la letra actual
     const length = path.getTotalLength();
     path.style.setProperty('--length', length);
 
-    // Calcula cuánto tarda en escribirse esta letra específicamente
     const duracion = Math.max(length * velocidad, 0.1);
 
-    // Le dice al CSS cuánto dura y en qué segundo tiene que empezar
     path.style.setProperty('--duracion', `${duracion}s`);
     path.style.setProperty('--delay', `${delayAcumulado}s`);
 
-    // Suma el tiempo para que la letra que sigue empiece justo cuando esta termina
     delayAcumulado += duracion;
   });
 
-  // El efecto de relleno suave empieza medio segundo después de la última letra
   svg.style.setProperty('--tiempo-total', `${delayAcumulado + 0.5}s`);
+
+  const img = new Image();
+  
+  if (window.innerWidth >= 768) {
+      img.src = './img/espaldaatardecer.jpg';
+  } else {
+      img.src = './img/fondo2.jpg';
+  }
+
+  img.onload = () => {
+      svg.classList.add('iniciar-animacion');
+  };
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', animarFirma);
+} else {
+  animarFirma();
+  setTimeout(animarFirma, 150);
 }
 
 // Ejecución segura para asegurarnos de que la web haya cargado
